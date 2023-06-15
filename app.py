@@ -1,13 +1,13 @@
 from mtcnn.mtcnn import MTCNN
 import streamlit as st
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-from matplotlib.patches import Circle
 from PIL import Image
 from numpy import asarray
 from scipy.spatial.distance import cosine
 from keras_vggface.vggface import VGGFace
 from keras_vggface.utils import preprocess_input
+import keras
+from keras.models import load_model
 
 choice = st.selectbox("Select Option", [
     "Face Verification"
@@ -16,6 +16,7 @@ choice = st.selectbox("Select Option", [
 
 def main():
     fig = plt.figure()
+    model = load_model('model/model.h5')
     if choice == "Face Verification":
         column1, column2 = st.beta_columns(2)
 
@@ -39,8 +40,8 @@ def main():
             faces = [extract_face(f) for f in filenames]
             samples = asarray(faces, "float32")
             samples = preprocess_input(samples, version=2)
-            model = VGGFace(model="resnet50", include_top=False, input_shape=(224, 224, 3),
-                            pooling="avg")
+            # model = VGGFace(model="resnet50", include_top=False, input_shape=(224, 224, 3),
+            #                 pooling="avg")
 
             # perform prediction
             embeddings = model.predict(samples)
